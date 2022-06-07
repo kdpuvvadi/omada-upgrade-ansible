@@ -1,0 +1,35 @@
+---
+
+- name: stop omada service.
+  service:
+    name: tpeap
+    state: stopped
+
+- name: Create Omada Directory "{{ config_dir_old }}"
+  file:
+    path: "{{ config_dir_old }}"
+    state: directory
+    mode: '0755'
+
+- name: Download & unzip the old version archive to "{{ config_dir_old }}"
+  unarchive:
+    src: "{{ omada_url_old }}"
+    dest: "{{ config_dir_old }}"
+    remote_src: 'yes'
+    extra_opts:
+      --strip-components=1
+
+- name: make {{ config_dir_old }}uninstall.sh executable
+  file:
+    path: "{{ config_dir_old }}/uninstall.sh"
+    mode: a+x
+
+- name: Uninstall Omada
+  command: "./uninstall.sh -y -y"
+  args:
+    chdir: "{{ config_dir_old }}/"
+  register: omadauninstall
+
+- name: omada uninstall status
+  debug:
+    msg: "{{ omadauninstall.stdout_lines }}"
