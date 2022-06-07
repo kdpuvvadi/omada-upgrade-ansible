@@ -1,0 +1,30 @@
+---
+
+- name: Create Omada Directory "{{ config_dir }}"
+  file:
+    path: "{{ config_dir }}"
+    state: directory
+    mode: '0755'
+
+- name: Download & unzip the latest version archive to "{{ config_dir }}"
+  unarchive:
+    src: "{{ omada_url }}"
+    dest: "{{ config_dir }}"
+    remote_src: 'yes'
+    extra_opts:
+      --strip-components=1
+
+- name: make {{ config_dir }}install.sh executable
+  file:
+    path: "{{ config_dir }}/install.sh"
+    mode: a+x
+
+- name: Install Omada
+  command: "./install.sh -y -y"
+  args:
+    chdir: "{{ config_dir }}/"
+  register: omadainstall
+
+- name: omada install status
+  debug:
+    msg: "{{ omadainstall.stdout_lines }}"
