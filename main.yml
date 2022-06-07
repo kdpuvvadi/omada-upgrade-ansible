@@ -1,0 +1,23 @@
+---
+- hosts: all
+  become: true
+
+  pre_tasks:
+    - name: vars
+      include_vars: vars.yml
+    
+    - name: Check Omada installation status
+      command: which tpeap
+      failed_when: false
+      changed_when: false
+      check_mode: false
+      register: omada_preset
+  
+  tasks:
+    - name: Uninstall the controller
+      import_tasks: tasks/uninstall.yml
+      when: omada_preset.rc == -1
+
+    - name: Uninstall the controller
+      import_tasks: tasks/install.yml
+      when: omada_preset.rc == -1
