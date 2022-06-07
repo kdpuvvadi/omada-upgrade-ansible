@@ -28,3 +28,9 @@
 - name: omada install status
   debug:
     msg: "{{ omadainstall.stdout_lines }}"
+
+- name: make sure Omada is running.
+  service:
+    name: tpeap
+    state: started
+    enabled: true

@@ -33,3 +33,7 @@
 - name: omada uninstall status
   debug:
     msg: "{{ omadauninstall.stdout_lines }}"
+
+- name: Reboot
+  reboot:
+    post_reboot_delay: 30
