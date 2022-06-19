@@ -5,7 +5,7 @@ Update you Omada Controller with Ansible
 ## Clone the repo
 
 ```bash
-git clone https://github.com/kdpuvvadi/omada-upgrade-ansible.git && cd omada-ansible
+git clone https://github.com/kdpuvvadi/omada-upgrade-ansible.git && cd omada-upgrade-ansible
 ```
 
 ## Vars & Inventory
