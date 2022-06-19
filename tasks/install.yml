@@ -1,5 +1,12 @@
 ---
 
+- name: is Omada installed
+  command: which tpeap
+  failed_when: false
+  changed_when: false
+  check_mode: false
+  register: omada_preset
+
 - name: Create Omada Directory "{{ config_dir }}"
   file:
     path: "{{ config_dir }}"
@@ -24,13 +31,39 @@
   args:
     chdir: "{{ config_dir }}/"
   register: omadainstall
+  when: omada_preset.rc == 1
 
 - name: omada install status
   debug:
     msg: "{{ omadainstall.stdout_lines }}"
+    
+- name: Omada install check
+  command: which tpeap
+  failed_when: false
+  changed_when: false
+  check_mode: false
+  register: omada_done
+
+- name: omada install status
+  debug:
+    msg: "{{ omada_done.stdout_lines }}"
+  when: omada_preset.rc == 1
 
 - name: make sure Omada is running.
   service:
     name: tpeap
     state: started
     enabled: true
+
+- name: Reboot
+  reboot:
+    post_reboot_delay: 30
+  when: reboot_required.stat.exists
+
+- name: Get my public IP
+  community.general.ipify_facts:
+  register: ip
+
+- name: url
+  debug:
+    msg: "Omada Controller is running at http://{{ ipify_public_ip }}:8088"
