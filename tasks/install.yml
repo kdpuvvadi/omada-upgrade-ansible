@@ -36,7 +36,7 @@
 - name: omada install status
   debug:
     msg: "{{ omadainstall.stdout_lines }}"
-    
+
 - name: Omada install check
   command: which tpeap
   failed_when: false
