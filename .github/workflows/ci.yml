@@ -61,7 +61,7 @@ jobs:
           ansible-lint .
 
       - name: YAML lint
-        run:  |
+        run: |
           cd omada-install
           yamllint .
 
@@ -100,22 +100,61 @@ jobs:
           ansible-playbook main.yml
 
   upgrade:
-      runs-on: ubuntu-latest
-      name: upgrade
-      needs: install
-      steps:
-        - name: checkout codebase
-          uses: actions/checkout@master
+    runs-on: ubuntu-latest
+    name: upgrade
+    needs: install
+    steps:
+      - name: checkout codebase
+        uses: actions/checkout@master
 
-        - name: Install doctl
-          uses: digitalocean/action-doctl@v2
-          with:
-            token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
+      - name: Install doctl
+        uses: digitalocean/action-doctl@v2
+        with:
+          token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
 
-        - name: install jq
-          run: sudo apt-get install -y jq
+      - name: install jq
+        run: sudo apt-get install -y jq
 
-        - name: delete droplet
-          run: |
-            dropletid=$(doctl compute droplet list  --output json | jq '.[0].id')
-            doctl compute droplet delete $dropletid --force
+      - name: install dependencies
+        run: pip3 install ansible ansible-lint yamllint
+
+      - name: Ansible Lint
+        run: |
+          ansible-lint .
+
+      - name: YAML lint
+        run: |
+          yamllint .
+
+      - name: Install SSH key
+        uses: shimataro/ssh-key-action@v2
+        with:
+          key: ${{ secrets.SSH_KEY }}
+          name: id_rsa
+          known_hosts: unnecessary
+          if_key_exists: fail
+
+      - name: setup ansible
+        run: |
+          cp inventory.ini.j2 inventory.ini
+          cp vars.yml.j2 vars.yml
+          hostip=$(doctl compute droplet list --format 'Public IPv4' --no-header)
+          sed -i -e "s/host_ip/$hostip/g" inventory.ini
+
+      - name: ping host
+        run: |
+          cat inventory.ini
+          eval `ssh-agent -s`
+          ssh-add ~/.ssh/id_rsa
+          export ANSIBLE_HOST_KEY_CHECKING=False
+          ansible all -m ping
+
+      - name: run playlist
+        run: |
+          export ANSIBLE_HOST_KEY_CHECKING=False
+          ansible-playbook main.yml
+
+      - name: delete droplet
+        run: |
+          dropletid=$(doctl compute droplet list  --output json | jq '.[0].id')
+          doctl compute droplet delete $dropletid --force
