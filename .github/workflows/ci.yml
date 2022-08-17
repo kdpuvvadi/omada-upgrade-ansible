@@ -4,7 +4,7 @@ name: ci
 'on': [push, pull_request, workflow_dispatch]
 
 jobs:
-  lint:
+  install:
     runs-on: ubuntu-latest
     name: install
     steps:
@@ -92,12 +92,30 @@ jobs:
           ssh-add ~/.ssh/id_rsa
           export ANSIBLE_HOST_KEY_CHECKING=False
           ansible all -m ping
+
       - name: run playlist
         run: |
           cd omada-install
           export ANSIBLE_HOST_KEY_CHECKING=False
           ansible-playbook main.yml
-      - name: delete droplet
-        run: |
-          dropletid=$(doctl compute droplet list  --output json | jq '.[0].id')
-          doctl compute droplet delete $dropletid --force
+
+  upgrade:
+      runs-on: ubuntu-latest
+      name: upgrade
+      needs: install
+      steps:
+        - name: checkout codebase
+          uses: actions/checkout@master
+
+        - name: Install doctl
+          uses: digitalocean/action-doctl@v2
+          with:
+            token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
+
+        - name: install jq
+          run: sudo apt-get install -y jq
+
+        - name: delete droplet
+          run: |
+            dropletid=$(doctl compute droplet list  --output json | jq '.[0].id')
+            doctl compute droplet delete $dropletid --force
