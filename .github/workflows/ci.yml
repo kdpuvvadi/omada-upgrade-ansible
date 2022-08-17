@@ -139,7 +139,6 @@ jobs:
           cp inventory.ini.j2 inventory.ini
           cp vars.yml.j2 vars.yml
           hostip=$(doctl compute droplet list --format 'Public IPv4' --no-header)
-          cat $hostip
           sed -i -e "s/host_ip/$hostip/g" inventory.ini
 
       - name: ping host
