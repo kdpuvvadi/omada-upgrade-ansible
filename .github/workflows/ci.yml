@@ -57,12 +57,12 @@ jobs:
 
       - name: Ansible Lint
         run: |
-          cd omada
+          cd omada-install
           ansible-lint .
 
       - name: YAML lint
         run:  |
-          cd omada
+          cd omada-install
           yamllint .
 
       - name: Install SSH key
@@ -75,7 +75,7 @@ jobs:
 
       - name: setup ansible
         run: |
-          cd omada-install
+          cd ./omada-install
           cp inventory.ini.j2 inventory.ini
           cp vars.yml.j2 vars.yml
           hostip=$(doctl compute droplet list --format 'Public IPv4' --no-header)
