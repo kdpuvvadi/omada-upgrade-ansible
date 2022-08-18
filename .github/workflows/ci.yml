@@ -53,6 +53,7 @@ jobs:
         uses: actions/checkout@master
         with:
           repository: kdpuvvadi/Omada-Ansible
+          ref: v5.3.1
           path: omada-install
 
       - name: Ansible Lint
@@ -87,7 +88,6 @@ jobs:
       - name: ping host
         run: |
           cd omada-install
-          cat inventory.ini
           eval `ssh-agent -s`
           ssh-add ~/.ssh/id_rsa
           export ANSIBLE_HOST_KEY_CHECKING=False
@@ -143,7 +143,6 @@ jobs:
 
       - name: ping host
         run: |
-          cat inventory.ini
           eval `ssh-agent -s`
           ssh-add ~/.ssh/id_rsa
           export ANSIBLE_HOST_KEY_CHECKING=False
