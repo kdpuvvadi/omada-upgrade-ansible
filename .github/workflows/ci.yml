@@ -81,6 +81,7 @@ jobs:
           cp vars.yml.j2 vars.yml
           hostip=$(doctl compute droplet list --format 'Public IPv4' --no-header)
           sed -i -e "s/host_ip/$hostip/g" inventory.ini
+          cat inventory.ini
 
       - name: wait
         run: sleep 30
