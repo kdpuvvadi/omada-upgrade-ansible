@@ -58,7 +58,6 @@
 - name: Reboot
   reboot:
     post_reboot_delay: 30
-  when: reboot_required.stat.exists
 
 - name: Get my public IP
   community.general.ipify_facts:

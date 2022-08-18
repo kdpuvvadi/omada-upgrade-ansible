@@ -11,14 +11,14 @@
   service:
     name: tpeap
     state: stopped
-  when: omada_check == 0
+  when: omada_check.rc == 0
 
 - name: Create Omada Directory "{{ config_dir_old }}"
   file:
     path: "{{ config_dir_old }}"
     state: directory
     mode: '0755'
-  when: omada_check == 0
+  when: omada_check.rc == 0
 
 - name: Download & unzip the old version archive to "{{ config_dir_old }}"
   unarchive:
@@ -27,25 +27,27 @@
     remote_src: 'yes'
     extra_opts:
       --strip-components=1
-  when: omada_check == 0
+  when: omada_check.rc == 0
 
 - name: make {{ config_dir_old }}uninstall.sh executable
   file:
     path: "{{ config_dir_old }}/uninstall.sh"
     mode: a+x
-  when: omada_check == 0
+  when: omada_check.rc == 0
 
 - name: Uninstall Omada
   command: "./uninstall.sh -y -y"
   args:
     chdir: "{{ config_dir_old }}/"
   register: omadauninstall
-  when: omada_check == 0
+  when: omada_check.rc == 0
 
 - name: omada uninstall status
   debug:
     msg: "{{ omadauninstall.stdout_lines }}"
+  when: omada_check.rc == 0
 
 - name: Reboot
   reboot:
     post_reboot_delay: 30
+  when: omada_check.rc == 0
