@@ -53,7 +53,7 @@ jobs:
         uses: actions/checkout@master
         with:
           repository: kdpuvvadi/Omada-Ansible
-          ref: v5.3.1
+          ref: 5.3.1
           path: omada-install
 
       - name: Ansible Lint
@@ -80,7 +80,7 @@ jobs:
           cp inventory.ini.j2 inventory.ini
           cp vars.yml.j2 vars.yml
           hostip=$(doctl compute droplet list --format 'Public IPv4' --no-header)
-          sed -i -e "s/host_ip/$hostip/g" inventory.ini
+          sed -i -e "s|host_ip|$hostip|g" inventory.ini
           cat inventory.ini
 
       - name: wait
