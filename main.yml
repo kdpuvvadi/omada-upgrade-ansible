@@ -16,8 +16,7 @@
   tasks:
     - name: Uninstall the controller
       import_tasks: tasks/uninstall.yml
-      when: omada_preset.rc != -1
+      when: omada_preset.rc == 0
 
     - name: Install the controller
       import_tasks: tasks/install.yml
-      when: omada_preset.rc != -1
