@@ -53,7 +53,6 @@ jobs:
         uses: actions/checkout@master
         with:
           repository: kdpuvvadi/Omada-Ansible
-          ref: 5.3.1
           path: omada-install
 
       - name: Ansible Lint
