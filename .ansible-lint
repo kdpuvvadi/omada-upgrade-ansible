@@ -3,3 +3,4 @@ skip_list:
     - package-latest
     - fqcn-builtins
     - no-changed-when
+    - name[casing]

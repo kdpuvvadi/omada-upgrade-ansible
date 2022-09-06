@@ -12,7 +12,7 @@ git clone https://github.com/kdpuvvadi/omada-upgrade-ansible.git && cd omada-upg
 
 * Copy inventory sample file `cp inventory.ini.j2 inventory.ini`
 * Change the ip address with actual IP address of the host server.
-* Copy varible file with `cp vars.yml.j2 vars.ini`
+* Copy varible file with `cp vars.yml.j2 vars.yml`
 
 ## Setup Ansible
 
