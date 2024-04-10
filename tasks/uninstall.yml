@@ -1,18 +1,18 @@
 ---
 
 - name: stop omada service.
-  service:
+  ansible.builtin.service:
     name: tpeap
     state: stopped
 
 - name: Create Omada Directory "{{ config_dir_old }}"
-  file:
+  ansible.builtin.file:
     path: "{{ config_dir_old }}"
     state: directory
     mode: '0755'
 
 - name: Download & unzip the old version archive to "{{ config_dir_old }}"
-  unarchive:
+  ansible.builtin.unarchive:
     src: "{{ omada_url_old }}"
     dest: "{{ config_dir_old }}"
     remote_src: 'yes'
@@ -20,20 +20,20 @@
       --strip-components=1
 
 - name: make {{ config_dir_old }}uninstall.sh executable
-  file:
+  ansible.builtin.file:
     path: "{{ config_dir_old }}/uninstall.sh"
     mode: a+x
 
 - name: Uninstall Omada
-  command: "./uninstall.sh -y -y"
+  ansible.builtin.command: "./uninstall.sh -y -y"
   args:
     chdir: "{{ config_dir_old }}/"
   register: omadauninstall
 
 - name: omada uninstall status
-  debug:
+  ansible.builtin.debug:
     msg: "{{ omadauninstall.stdout_lines }}"
 
 - name: Reboot
-  reboot:
+  ansible.builtin.reboot:
     post_reboot_delay: 30

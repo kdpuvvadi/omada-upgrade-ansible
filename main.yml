@@ -4,10 +4,10 @@
 
   pre_tasks:
     - name: vars
-      include_vars: vars.yml
+      ansible.builtin.include_vars: vars.yml
 
     - name: Check Omada installation status
-      command: which tpeap
+      ansible.builtin.command: which tpeap
       failed_when: false
       changed_when: false
       check_mode: false
@@ -15,8 +15,8 @@
 
   tasks:
     - name: Uninstall the controller
-      import_tasks: tasks/uninstall.yml
+      ansible.builtin.import_tasks: tasks/uninstall.yml
       when: omada_preset.rc == 0
 
     - name: Install the controller
-      import_tasks: tasks/install.yml
+      ansible.builtin.import_tasks: tasks/install.yml
