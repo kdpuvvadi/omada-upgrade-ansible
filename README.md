@@ -14,6 +14,10 @@ git clone https://github.com/kdpuvvadi/omada-upgrade-ansible.git && cd omada-upg
 * Change the ip address with actual IP address of the host server.
 * Copy varible file with `cp vars.yml.j2 vars.ini`
 
+> Make sure to change the urls of `omada_url_old` with your current version of Omada version `omada_url` with latest version url. 
+
+Latest version of Omada Controller can be found [here](https://www.tp-link.com/en/support/download/omada-software-controller/v5/)
+
 ## Setup Ansible
 
 * install python & pip with `sudo apt install python3 python3-pip -y`
